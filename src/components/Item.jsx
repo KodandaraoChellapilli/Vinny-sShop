@@ -1,4 +1,4 @@
-function Item({ item, selectProduct }) {
+function Item({ item, selectProduct, changeQuantity }) {
   return (
     <>
       <div
@@ -15,9 +15,14 @@ function Item({ item, selectProduct }) {
 
           {item.isInBag && (
             <div className="quantity-area">
-              <button>-</button>
+              <button
+                disabled={item.quantity <= 1}
+                onClick={(e) => changeQuantity(e, item.id, -1)}
+              >
+                -
+              </button>
               <span className="quantity">{item.quantity}</span>
-              <button>+</button>
+              <button onClick={(e) => changeQuantity(e, item.id, +1)}>+</button>
             </div>
           )}
         </div>

@@ -1,9 +1,10 @@
 import "./App.css";
 import OrderDetails from "./components/OrderDetails";
 import Item from "./components/Item";
+import { useState } from "react";
 
 function App() {
-  const items = [
+  const [items, setItems] = useState([
     {
       id: 1,
       photo: "real_madrid.webp",
@@ -85,9 +86,24 @@ function App() {
       quantity: 1,
       isInBag: false,
     },
-  ];
+  ]);
   const itemsInBag = items.filter((item) => item.isInBag);
   const shopName = "Vinny Shop Made with React JS";
+
+  function selectHandler(id) {
+    let item = items.filter((item) => item.id === id)[0];
+    item.isInBag = !item.isInBag;
+
+    setItems(items.map((el) => (el.id === id ? item : el)));
+  }
+
+  function quantityHandler(e, id, increment) {
+    e.stopPropagation();
+    let item = items.filter((item) => item.id === id)[0];
+    item.quantity += increment;
+
+    setItems(items.map((el) => (el.id === id ? item : el)));
+  }
 
   return (
     <>
@@ -96,14 +112,16 @@ function App() {
 
         {items.map((item) => (
           <Item
-            selectProduct={(id) => alert(`clicked product ${id}`)}
+            selectProduct={(id) => selectHandler(id)}
+            changeQuantity={(e, id, increment) =>
+              quantityHandler(e, id, increment)
+            }
             item={item}
             key={item.id}
           />
         ))}
       </section>
-
-      <OrderDetails />
+      {itemsInBag.length > 0 && <OrderDetails itemsInBag={itemsInBag} />}
     </>
   );
 }
